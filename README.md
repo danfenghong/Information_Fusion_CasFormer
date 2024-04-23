@@ -6,7 +6,6 @@ Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&h
 **Information Fusion: (https://doi.org/10.1016/j.inffus.2024.102408).  
 </div>
 
-## Overview
 ![alt text](./CasFormer.png)
 
 **Fig.1.** The overall architecture of CasFormer with the input of RGB, coded measurement, and mask. The core module of **CasFormer** consists of a series of cascade-attention (CA) blocks, where “mask” is directly correlated with imaging devices.
