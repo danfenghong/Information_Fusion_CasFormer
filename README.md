@@ -1,5 +1,5 @@
 <div align="center">
-<h1>CasFormer: Cascaded transformers for fusion-aware computational hyperspectral imaging</h1>
+<h1>CasFormer: Cascaded Transformers for Fusion-aware Computational Hyperspectral Imaging</h1>
   
 Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&hl=en), [Danfeng Hong](https://scholar.google.com/citations?hl=en&user=n7gL0_IAAAAJ&view_op=list_works&sortby=pubdate), [Jun Zhou](https://scholar.google.com.au/citations?user=6hOOxw0AAAAJ&hl=en), [Gemine Vivone](https://scholar.google.com/citations?user=sjb_uAMAAAAJ&hl=en), [Shutao Li](https://scholar.google.com/citations?user=PlBq8n8AAAAJ&hl=en), [Jocelyn Chanussot](https://scholar.google.com/citations?user=6owK2OQAAAAJ&hl=en)
 
@@ -18,7 +18,7 @@ Please simply run `./train_code/train.py` demo to reproduce our CAVE results by 
 - Results: Please see the five evaluation metrics (PSNR, SSIM, and SAM) logged in `./checkpoints/CAVE_*name*/precision.txt` and the output `.mat` files saved in `./Results/CAVE/`.
 - The experiments were run on 8 NVIDIA GeForce RTX 3090 GPUs.
 
-:exclamation: The pretrained model on CAVE dataset can be downloaded from [here]() with code: y2a0 or [here]().
+:exclamation: The pretrained model on the CAVE dataset can be downloaded from [here]() with code: y2a0 or [here]().
 
 :exclamation: You may need to manually download the KAIST dataset ([Google drive]() and [Baiduyun]()  with code: 6q6j) and ICVL dataset ([Google drive]() and [Baiduyun]() with code:  6q6j) on your local in the folder under path `./dataset`, due to storage restriction, from the following links of google drive or baiduyun:
 
@@ -27,12 +27,13 @@ Please simply run `./train_code/train.py` demo to reproduce our CAVE results by 
 **Please kindly cite the papers if this code is useful and helpful for your research.**
 
 ```
-@article{LI2024102408,
- title = {CasFormer: Cascaded transformers for fusion-aware computational hyperspectral imaging},
- journal = {Information Fusion},
- volume = {108},
- pages = {102408},
- year = {2024}
+@article{li2024casformer,
+  title={CasFormer: Cascaded transformers for fusion-aware computational hyperspectral imaging},
+  author={Li, Chenyu and Zhang, Bing and Hong, Danfeng and Zhou, Jun and Vivone, Gemine and Li, Shutao and Chanussot, Jocelyn},
+  journal={Information Fusion},
+  pages={102408},
+  year={2024},
+  publisher={Elsevier}
 }
 ```
 
