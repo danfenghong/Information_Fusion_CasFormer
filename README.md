@@ -1,7 +1,7 @@
 <div align="center">
 <h1>CasFormer: Cascaded transformers for fusion-aware computational hyperspectral imaging</h1>
   
-Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&hl=en), [Danfeng Hong](https://scholar.google.com/citations?hl=en&user=n7gL0_IAAAAJ&view_op=list_works&sortby=pubdate), [Gemine Vivone](https://scholar.google.com/citations?user=sjb_uAMAAAAJ&hl=en), [Shutao Li](https://scholar.google.com/citations?user=PlBq8n8AAAAJ&hl=en), [Jocelyn Chanussot](https://scholar.google.com/citations?user=6owK2OQAAAAJ&hl=en)
+Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&hl=en), [Danfeng Hong](https://scholar.google.com/citations?hl=en&user=n7gL0_IAAAAJ&view_op=list_works&sortby=pubdate), [Jun Zhou](https://scholar.google.com.au/citations?user=6hOOxw0AAAAJ&hl=en), [Gemine Vivone](https://scholar.google.com/citations?user=sjb_uAMAAAAJ&hl=en), [Shutao Li](https://scholar.google.com/citations?user=PlBq8n8AAAAJ&hl=en), [Jocelyn Chanussot](https://scholar.google.com/citations?user=6owK2OQAAAAJ&hl=en)
 
 **Information Fusion: (https://doi.org/10.1016/j.inffus.2024.102408).  
 </div>
