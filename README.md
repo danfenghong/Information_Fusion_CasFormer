@@ -18,7 +18,7 @@ Please simply run `./train_code/train.py` demo to reproduce our CAVE results by 
 - Results: Please see the five evaluation metrics (PSNR, SSIM, and SAM) logged in `./checkpoints/CAVE_*name*/precision.txt` and the output `.mat` files saved in `./Results/CAVE/`.
 - The experiments were run on 8 NVIDIA GeForce RTX 3090 GPUs.
 
-:exclamation: The pretrained model on CAVE dataset can be downloaded from [here](https://pan.baidu.com/s/1aQ4lpB7LVt7qECN68iE3xQ?pwd=y2a0) with code: y2a0 or [here]().
+:exclamation: The pretrained model on CAVE dataset can be downloaded from [here]() with code: y2a0 or [here]().
 
 :exclamation: You may need to manually download the KAIST dataset ([Google drive]() and [Baiduyun]()  with code: 6q6j) and ICVL dataset ([Google drive]() and [Baiduyun]() with code:  6q6j) on your local in the folder under path `./dataset`, due to storage restriction, from the following links of google drive or baiduyun:
 
