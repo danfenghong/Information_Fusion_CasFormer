@@ -28,17 +28,12 @@ class dataset(tud.Dataset):
 
         # for idx in range(1):
         if self.dataset_type == "kaist":
-            # input:filepath
-            # return:a list of mat (HSI,RGB,mask)
-            # 对于每个file，读取得到HSI、RGB和mask，concat起来之后裁剪patch_per_img，放到self.mat_list中
             for per_data in file_list:
                 if ".mat" in per_data:
-                    # 读取
                     self.filenames.append(data_path + per_data)
                     mat = sio.loadmat(data_path + per_data)
                     HSI = mat['img']
                     RGB = mat["rgb"]
-                    # mask = self.mask
                     data = np.concatenate((RGB, HSI), axis=2)
                     H, W, _ = HSI.shape
                     x = list(range(crop_size // 2, H - crop_size // 2))
@@ -52,29 +47,21 @@ class dataset(tud.Dataset):
                         y_0 = sample[1]
                         mat = data[x_0 - 128:x_0 + 128, y_0 - 128:y_0 + 128, :]
                         self.mat_list.append(mat)
-
-
         else:
             for per_data in file_list:
                 if ".mat" in per_data:
                     mat = sio.loadmat(data_path + per_data)
                     self.filenames.append(data_path + per_data)
                     self.mat_list.append(mat)
-        #            img = sio.loadmat(data_path + per_data)
-
         self.isTrain = opt.isTrain
         self.size = opt.size
-        # self.path = opt.data_path
+        
         if self.isTrain == True:
             self.num = opt.trainset_num
-        # else:
-        #     self.num = opt.testset_num
-        # self.CAVE = CAVE
-        # self.KAIST = KAIST, KAIST
-        ## load mask
+
 
     def __getitem__(self, index):
-        # index1 = 0; d=0
+
         if self.dataset_type == "kaist":
             img = self.mat_list[index]
             HSI = img[:, :, 0:28]
@@ -103,7 +90,6 @@ class dataset(tud.Dataset):
             else:
                 mask3d = mask.repeat(28, 1, 1)  # 28 256 256   1, 1, 28
 
-            # mask3d = np.transpose(mask3d, (1, 2, 0))
             temp_1 = mask3d * HSI_data  # 28, 256, 256(After Norm)  meas
             temp_2 = sift(temp_1, 2)  # 28, 256, 310  beta #0
             mea = torch.sum(temp_2, 0)  # 256, 310
@@ -125,19 +111,10 @@ class dataset(tud.Dataset):
             mask = torch.from_numpy(mask[np.newaxis, :, :])
 
             if self.dataset_type == "cave":
-                # HSI = img['cave_data'] / 65535.0
-                # RGB = img['cave_rgb'] / 65535.0
+               
                 HSI = img["cave_data"]
                 RGB = img['cave_rgb']
-                # for i in range(28):
-                #     HSI[:,:,i]=(HSI[:,:,i]-np.min(HSI[:,:,i]))/(np.max(HSI[:,:,i])-np.min(HSI[:,:,i]))
-                # HSI = (HSI-HSI.min())/(HSI.max()-HSI.min())
-                # for i in range(3):
-                #     RGB[:, :, i] = (RGB[:, :, i] - np.min(RGB[:, :, i])) / (np.max(RGB[:, :, i]) - np.min(RGB[:, :, i]))
-                # HSI[HSI < 0] = 0
-                # HSI[HSI > 1] = 1
-                # RGB[RGB < 0] = 0
-                # RGB[RGB > 1] = 1
+               
             elif self.dataset_type == "CAVE31":
                 HSI = img["M"]
                 RGB = img['RGB']
@@ -165,44 +142,21 @@ class dataset(tud.Dataset):
                 data = self.process_data_test(data)
 
             if self.dataset_type == "CAVE31" or self.dataset_type == "ARAD":
-                RGB_data = data[0:3, :, :]  # 3 256 256
-                HSI_data = data[3:34, :, :]  # 28   34
-                mask = data[34, :, :]  # 31
-            #########################################################################################################33
-            # RGB_data = np.transpose(RGB_data, (1, 2, 0))
-            # HSI_data = np.transpose(HSI_data, (1, 2, 0))
-            # h, w, nC, beta = 256, 256, 31, 0.9
-            # RGB_data_1 = torch.unsqueeze(RGB_data[:, :, 2], 2)
-            # RGB_data_2 = torch.unsqueeze(RGB_data[:, :, 1], 2)
-            # RGB_data_3 = torch.unsqueeze(RGB_data[:, :, 0], 2)
-            # RGB_data = torch.cat((RGB_data_1, RGB_data_2, RGB_data_3), dim=2)
-            # RGB_data = F.interpolate(RGB_data, size=[nC], mode='linear')
-            # RGB_data = RGB_data * (1 - beta)
-            #####################################################################################################################
+                RGB_data = data[0:3, :, :]
+                HSI_data = data[3:34, :, :]  
+                mask = data[34, :, :] 
 
             else:
-                RGB_data = data[0:3, :, :]  # 3 256 256
-                HSI_data = data[3:31, :, :]  # 28   34
-                mask = data[31, :, :]  # 31
-            #####################################################################################################################
-            # RGB_data = np.transpose(RGB_data, (1, 2, 0))
-            # HSI_data = np.transpose(HSI_data, (1, 2, 0))
-            # h, w, nC, beta = 256, 256, 28, 0.9
-            # RGB_data_1 = torch.unsqueeze(RGB_data[:, :, 2], 2)
-            # RGB_data_2 = torch.unsqueeze(RGB_data[:, :, 1], 2)
-            # RGB_data_3 = torch.unsqueeze(RGB_data[:, :, 0], 2)
-            # RGB_data = torch.cat((RGB_data_1, RGB_data_2, RGB_data_3), dim=2)
-            # RGB_data = F.interpolate(RGB_data, size=[nC], mode='linear')
-            # RGB_data = RGB_data * (1 - beta)
-            #####################################################################################################################
-            # mask_3d
+                RGB_data = data[0:3, :, :]  
+                HSI_data = data[3:31, :, :]  
+                mask = data[31, :, :]  
+
             nC = HSI_data.shape[0]  # 0
             if self.dataset_type == "CAVE31" or self.dataset_type == "ARAD":
                 mask3d = mask.repeat(31, 1, 1)  # 28 256 256   1, 1, 31
             else:
                 mask3d = mask.repeat(28, 1, 1)  # 28 256 256   1, 1, 28
 
-            # mask3d = np.transpose(mask3d, (1, 2, 0))
             temp_1 = mask3d * HSI_data  # 28, 256, 256(After Norm)  meas
             temp_2 = sift(temp_1, 2)  # 28, 256, 310  beta #0
             mea = torch.sum(temp_2, 0)  # 256, 310
@@ -216,15 +170,7 @@ class dataset(tud.Dataset):
 
             mask3d_shift = sift_mask(mask3d, int(2))
             gt = HSI_data
-            # RGB_data = np.transpose(RGB_data, (1, 2, 0))
-            label_rgb = RGB_data
-            # h w  c --->c h w
-            # input = np.transpose(input, (2, 0, 1))
-            # gt = np.transpose(gt, (2, 0, 1))
-            # label_rgb = np.transpose(label_rgb, (2, 0, 1))
-            # mask3d = np.transpose(mask3d, (2, 0, 1))
-            # mask3d_shift = np.transpose(mask3d_shift, (2, 0, 1))
-
+           
         return input, gt, label_rgb, mask3d, mask3d_shift
 
     def __len__(self):
