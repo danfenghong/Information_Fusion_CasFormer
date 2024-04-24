@@ -56,15 +56,12 @@ if opt.scheduler == 'MultiStepLR':
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=opt.milestones, gamma=opt.gamma)
 elif opt.scheduler == 'CosineAnnealingLR':
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, opt.max_epoch, eta_min=1e-6)
-# criterion = nn.MSELoss().cuda()
 criterion = nn.L1Loss(reduction="mean").cuda()
 
 #kl = KL_Loss(T=10, method="mean").cuda()
 
 
 def eval_metrics(epoch, loader, mode):
-    # input:epoch test_loader
-    # output:None
     psnr_mean_list = []
     ssim_mean_list = []
     mse_mean_list = []
@@ -72,7 +69,7 @@ def eval_metrics(epoch, loader, mode):
 
     begin = time.time()
     if mode == "test":
-        duration = 50
+        duration = 10
     if mode == "train":
         duration = 300
     for i, (input_meas, gt_test, label_rgb_test, mask3d_test, mask3d_shift_test) in enumerate(loader):
@@ -97,7 +94,6 @@ def eval_metrics(epoch, loader, mode):
     ssim_mean = np.mean(np.asarray(ssim_mean_list))
     mse_mean = np.mean(np.asarray(mse_mean_list))
     sam_mean = np.mean(np.asarray(sam_mean_list))
-
 
     end = time.time()
     if mode=="test":
@@ -173,7 +169,7 @@ if __name__ == "__main__":
     Dataset = dataset(opt, opt.data_path_cave, opt.mask_path, patch_per_img=300, dataset_type="cave", mode="train")
 
     # data_path_test = "/....../CasFormer/datasets/Test/all_test/1/"
-    Test_Dataset = dataset(opt, opt.data_path_test, opt.TestMask_path, patch_per_img=50, dataset_type="cave",
+    Test_Dataset = dataset(opt, opt.data_path_test, opt.TestMask_path, patch_per_img=10, dataset_type="cave",
                            mode="test")
 
     loader_train = tud.DataLoader(Dataset, num_workers=8, batch_size=opt.batch_size, shuffle=True)
