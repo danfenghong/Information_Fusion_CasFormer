@@ -169,10 +169,10 @@ if __name__ == "__main__":
     print(opt)
     data_init_begin = time.time()
 
-    # data_path_cave = "/media/bimeiqiao/sda11/LCY/CasFormer/datasets/data_test/cave_1028/"
+    # data_path_cave = "/....../CasFormer/datasets/data_test/cave_1028/"
     Dataset = dataset(opt, opt.data_path_cave, opt.mask_path, patch_per_img=300, dataset_type="cave", mode="train")
 
-    # data_path_test = "/media/bimeiqiao/sda11/LCY/CasFormer/datasets/Test/all_test/1/"
+    # data_path_test = "/....../CasFormer/datasets/Test/all_test/1/"
     Test_Dataset = dataset(opt, opt.data_path_test, opt.TestMask_path, patch_per_img=50, dataset_type="cave",
                            mode="test")
 
@@ -208,24 +208,14 @@ if __name__ == "__main__":
             psnr_list, ssim_list, mse_list, sam_list = [], [], [], []
             model_out = model(input, label_rgb, mask3d_shift)
             #######################################################
-            ###########################################################
-            # loss_gt = torch.sqrt(criterion(model_out, gt))
             loss_gt = criterion(model_out, gt)
-           # loss_kl = 0  # kl(model_out, gt)
             loss = loss_gt  # + loss_kl
             epoch_loss += loss.item()
             epoch_loss_gt += loss_gt.item()
-            # epoch_loss_kl += loss_kl.item()
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             iteration_time_end = time.time()
-            # print(f"this iteration caclulation costs {iteration_time_end-iteration_time_begin} s")
-
-            # if i % (1000) == 0:
-            #     print('%4d %4d / %4d loss = %.10f time = %s' % (
-            #         epoch + 1, i, len(Dataset) // opt.batch_size, epoch_loss / ((i + 1) * opt.batch_size),
-            #         datetime.datetime.now()))
 
         elapsed_time = time.time() - start_time
         print(
