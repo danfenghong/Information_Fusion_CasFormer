@@ -158,10 +158,6 @@ class Mspe(nn.Module):  # [bs, 28, 256, 256]
 
         return Xspe
 
-
-# ----------------------------------------
-#           光谱特征提取
-# ----------------------------------------
 class SpeFE(nn.Module):
     def __init__(self, dim):
         super(SpeFE, self).__init__()
