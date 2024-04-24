@@ -17,7 +17,7 @@ parser.add_argument('--outf', type=str, default='./exp/HRFT/', help='saving_path
 # Model specifications
 parser.add_argument('--method', type=str, default='HRFT', help='method name')
 parser.add_argument('--pretrained_model_path', type=str,
-                    default="/media/bimeiqiao/sda11/LCY/CasFormer/simulation/test_code/model_zoo/model_160.pth",
+                    default="/....../CasFormer/simulation/test_code/model_zoo/cave_model.pth",
                     help='pretrained model directory')
 parser.add_argument("--input_setting", type=str, default='H',
                     help='the input measurement of the network: H, HM or Y')
