@@ -11,17 +11,42 @@ Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&h
 **Fig.1.** The overall architecture of CasFormer with the input of RGB, coded measurement, and mask. The core module of **CasFormer** consists of a series of cascade-attention (CA) blocks, where “mask” is directly correlated with imaging devices.
 
 ## Code Running
-Please simply run `./train_code/train.py` demo to reproduce our CAVE results by [CAVE dataset](http://www.cs.columbia.edu/CAVE/databases/multispectral) (Using [PyTorch](https://pytorch.org/) with `Python 3.7` implemented on `Windows` OS).
+ :anger: Before: For the required packages, please refer to detailed `.py` files;
+ 
+ :rocket: Parameters: The trade-off parameters as `option.py*` could be better tuned and the network hyperparameters are flexible;
+ 
+ :artificial_satellite: Results: Please see the three evaluation metrics (PSNR, SSIM, and SAM);
+ 
+ :earth_africa: The experiments were run on 8 NVIDIA GeForce RTX 3090 GPUs.
 
-- Before: For the required packages, please refer to detailed `.py` files.
-- Parameters: The trade-off parameters as `train_opt.lambda_*` could be better tuned and the network hyperparameters are flexible.
-- Results: Please see the five evaluation metrics (PSNR, SSIM, and SAM) logged in `./checkpoints/CAVE_*name*/precision.txt` and the output `.mat` files saved in `./Results/CAVE/`.
-- The experiments were run on 8 NVIDIA GeForce RTX 3090 GPUs.
+> [!NOTE]
+> - You may need to manually download the `CAVE dataset` (http://www.cs.columbia.edu/CAVE/databases/multispectral), `KAIST dataset` (https://vclab.kaist.ac.kr/siggraphasia2017p1/kaistdataset.html), and `ICVL dataset` (http://icvl.cs.bgu.ac.il/hyperspectral/).
+> 
+> - The pretrained model (cave_model.pth) can be downloaded from [Baidu Disk](https://pan.baidu.com/s/1iLGBiAcTMxiXWQsBIu9z5A) with code: `ho6j` or [Google Drive](https://drive.google.com/drive/folders/14zpLtK_TGXhAcUPJVpzboHyR1AbbpcUp?usp=sharing).
+>
+> - Simply run `./test_code/test.py` to reproduce our method on CAVE test dataset from [Baidu Disk](https://pan.baidu.com/s/1TCmqUnJ8KkxpuMnJeeQ_Pw) with code: `ziyy` or [Google Drive](https://drive.google.com/drive/folders/1vQaPOj3oYZCq6s09useXcYvofhI6YLOD?usp=sharing).
 
-:exclamation: The pretrained model on the CAVE dataset can be downloaded from [here]() with code: y2a0 or [here]().
-
-:exclamation: You may need to manually download the KAIST dataset ([Google drive]() and [Baiduyun]()  with code: 6q6j) and ICVL dataset ([Google drive]() and [Baiduyun]() with code:  6q6j) on your local in the folder under path `./dataset`, due to storage restriction, from the following links of google drive or baiduyun:
-
+```shell
+|--CasFormer
+    |--datasets
+    	|-- cave_test
+            |--scene1.mat
+            |--scene2.mat
+            ：
+            |--scene10.mat
+            |--mask_test.mat  
+    	|-- cave_train
+            |--scene1.mat
+            |--scene2.mat
+            ：
+            |--scene20.mat
+    |--simulation
+    	|-- test_code
+            |--model_zoo
+                 |--cave_model.pth
+ 
+```
+ 
 ## Citation Details
 
 **Please kindly cite the papers if this code is useful and helpful for your research.**
