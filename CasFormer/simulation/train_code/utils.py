@@ -11,7 +11,6 @@ import logging
 from ssim_torch import *
 from option import *
 
-
 def _as_floats(im1, im2):
     im1 = im1.cpu().detach()
     im1 = im1.numpy()
@@ -22,8 +21,6 @@ def _as_floats(im1, im2):
     im2 = np.asarray(im2, dtype=float_type)
     return im1, im2
 
-##########################################################################################################
-# We find that this calculation method is more close to DGSMP's.
 def torch_psnr(img, ref):  # input [28,256,256]
     img = (img * 256).round()
     ref = (ref * 256).round()
@@ -33,7 +30,6 @@ def torch_psnr(img, ref):  # input [28,256,256]
         mse = torch.mean((img[i, :, :] - ref[i, :, :]) ** 2)
         psnr += 10 * torch.log10((255 * 255) / mse)
     return psnr / nC
-
 
 def torch_ssim(img, ref):  # input [28,256,256]
     return ssim(torch.unsqueeze(img, 0), torch.unsqueeze(ref, 0))
@@ -65,14 +61,12 @@ def compare_psnr(im_true, im_test, data_range=None):
     err = compare_mse(im_true, im_test)
     return 10 * np.log10((data_range ** 2) / err)
 
-
 def psnr(img1, img2):
     mse = np.mean((img1 / 255. - img2 / 255.) ** 2)
     if mse < 1.0e-10:
         return 100
     PIXEL_MAX = 1
     return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
-
 
 def PSNR_GPU(im_true, im_fake):
     im_true *= 255
@@ -99,7 +93,6 @@ def normalize(data):
     data = data.reshape((h, w, c))
     return data
 
-
 def generate_masks(mask_path, batch_size):
     mask = sio.loadmat(mask_path + '/mask.mat')
     mask = mask['mask']
@@ -109,7 +102,6 @@ def generate_masks(mask_path, batch_size):
     [nC, H, W] = mask3d.shape
     mask3d_batch = mask3d.expand([batch_size, nC, H, W]).cuda().float()
     return mask3d_batch
-
 
 def generate_shift_masks(mask_path, batch_size):
     mask = sio.loadmat(mask_path + '/mask_3d_shift.mat')
@@ -123,7 +115,6 @@ def generate_shift_masks(mask_path, batch_size):
     print(Phi_batch.shape, Phi_s_batch.shape)  # 256,310,28
     return Phi_batch, Phi_s_batch
 
-
 def shift_mask(mask_3d, batch_size):
     # mask = sio.loadmat(mask_path + '/mask_3d_shift.mat')
     # mask_3d_shift = mask['mask_3d_shift']
@@ -133,9 +124,7 @@ def shift_mask(mask_3d, batch_size):
     Phi_batch = mask_3d_shift.expand([batch_size, nC, H, W]).cuda().float()
     Phi_s_batch = torch.sum(Phi_batch ** 2, 1)
     Phi_s_batch[Phi_s_batch == 0] = 1
-    # print(Phi_batch.shape, Phi_s_batch.shape)  256,310,28
     return Phi_s_batch  # Phi_batch
-
 
 def findLastCheckpoint(save_dir):
     file_list = glob.glob(os.path.join(save_dir, 'model_*.pth'))
@@ -149,14 +138,12 @@ def findLastCheckpoint(save_dir):
         initial_epoch = 0
     return initial_epoch
 
-
 def loadpath(pathlistfile):
     fp = open(pathlistfile)
     pathlist = fp.read().splitlines()
     fp.close()
     random.shuffle(pathlist)
     return pathlist
-
 
 def time2file_name(time):
     year = time[0:4]
@@ -168,14 +155,12 @@ def time2file_name(time):
     time_filename = year + '_' + month + '_' + day + '_' + hour + '_' + minute + '_' + second
     return time_filename
 
-
 def shuffle_crop_all(train_hsi, train_rgb, batch_size, crop_size=256, argument=True):
     if argument:
         gt_batch = []
         rgb_batch = []
         index_hsi = np.random.choice(range(len(train_hsi)), batch_size)
         processed_data1 = np.zeros((batch_size, crop_size, crop_size, 28), dtype=np.float32)
-
         index_rgb = np.random.choice(range(len(train_rgb)), batch_size)
         processed_data2 = np.zeros((batch_size, crop_size, crop_size, 3), dtype=np.float32)
 
@@ -187,7 +172,6 @@ def shuffle_crop_all(train_hsi, train_rgb, batch_size, crop_size=256, argument=T
             processed_data1[i, :, :, :] = img_hsi[x_index:x_index + crop_size, y_index:y_index + crop_size, :].cpu()
             img_rgb = train_rgb[index_rgb[i]]
             processed_data2[i, :, :, :] = img_rgb[x_index:x_index + crop_size, y_index:y_index + crop_size, :]
-
         gt_batch = torch.from_numpy(np.transpose(processed_data1, (0, 3, 1, 2))).cuda().float()
         rgb_batch = torch.from_numpy(np.transpose(processed_data2, (0, 3, 1, 2))).cuda().float()
 
@@ -209,7 +193,6 @@ def shuffle_crop_all(train_hsi, train_rgb, batch_size, crop_size=256, argument=T
             processed_data1[i, :, :, :] = img[x_index:x_index + crop_size, y_index:y_index + crop_size, :]
         gt_batch = torch.from_numpy(np.transpose(processed_data1, (0, 3, 1, 2)))
         rgb_batch = torch.from_numpy(np.transpose(processed_data2, (0, 3, 1, 2)))
-
         return gt_batch, rgb_batch
 
 
@@ -222,15 +205,12 @@ def gen_log(model_path):
     fh = logging.FileHandler(log_file, mode='a')
     fh.setLevel(logging.INFO)
     fh.setFormatter(formatter)
-    #
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
     ch.setFormatter(formatter)
-    #
     logger.addHandler(fh)
     logger.addHandler(ch)
     return logger
-
 
 def gen_meas_torch(data_batch, mask3d_batch, Y2H=True, mul_mask=False):
     nC = data_batch.shape[1]
@@ -245,7 +225,6 @@ def gen_meas_torch(data_batch, mask3d_batch, Y2H=True, mul_mask=False):
         return H
     return meas
 
-
 def init_mask(mask, Phi, Phi_s, mask_type):
     if mask_type == 'Phi':
         input_mask = Phi
@@ -257,14 +236,12 @@ def init_mask(mask, Phi, Phi_s, mask_type):
         input_mask = None
     return input_mask
 
-
 def shift(inputs, step=2):
     [bs, nC, row, col] = inputs.shape
     output = torch.zeros(bs, nC, row, col + (nC - 1) * step).cuda().float()
     for i in range(nC):
         output[:, i, :, step * i:step * i + col] = inputs[:, i, :, :]
     return output
-
 
 def shift_back(inputs, step=2):  # input [bs,256,310]  output [bs, 28, 256, 256]
     [bs, row, col] = inputs.shape
@@ -273,7 +250,6 @@ def shift_back(inputs, step=2):  # input [bs,256,310]  output [bs, 28, 256, 256]
     for i in range(nC):
         output[:, i, :, :] = inputs[:, :, step * i:step * i + col - (nC - 1) * step]
     return output
-
 
 def init_meas(gt, mask, input_setting):
     if input_setting == 'H':
@@ -284,18 +260,15 @@ def init_meas(gt, mask, input_setting):
         input_meas = gen_meas_torch(gt, mask, Y2H=False, mul_mask=True)
     return input_meas
 
-
 def checkpoint(model, epoch, model_path, logger):
     model_out_path = model_path + "/model_epoch_{}.pth".format(epoch)
     torch.save(model.state_dict(), model_out_path)
     logger.info("Checkpoint saved to {}".format(model_out_path))
 
-#######################################################################################################
 def init_mea(gt, mask, input_setting):
     if input_setting == 'H':
         input_mea = gen_mea(gt, mask, Y2H=True)
     return input_mea
-
 
 def gen_mea(data_batch, mask3d_batch, Y2H=True):
     nC = data_batch.shape[0]
@@ -307,14 +280,12 @@ def gen_mea(data_batch, mask3d_batch, Y2H=True):
         return H
     return mea
 
-
 def sift(input, step=2):
     [nC, row, col] = input.shape
     output = torch.zeros(nC, row, col + (nC - 1) * step)
     for i in range(nC):
         output[i, :, step * i:step * i + col] = input[i, :, :]
     return output
-
 
 def sift_data(input, nC, step=2):  # input [256,310]  output [256, 256, 28]
     [row, col] = input.shape
@@ -324,14 +295,9 @@ def sift_data(input, nC, step=2):  # input [256,310]  output [256, 256, 28]
         output[i, :, :] = input[:, step * i:step * i + col - (nC - 1) * step]
     return output
 
-
-#######################################################################################################
-# mask_3d to mask_3d shift
-
 def sift_mask(inputs, step=2):
     [nC, row, col] = inputs.shape
     output = torch.zeros(nC, row, col + (nC - 1) * step)
     for i in range(nC):
         output[i ,:, step * i:step * i + col] = inputs[i, :, :]
     return output
-#######################################################################################################
