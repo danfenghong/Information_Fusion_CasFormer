@@ -38,21 +38,6 @@ def torch_psnr(img, ref):  # input [28,256,256]
 def torch_ssim(img, ref):  # input [28,256,256]
     return ssim(torch.unsqueeze(img, 0), torch.unsqueeze(ref, 0))
 
-# def batch_SAM_GPU(img, ref):
-#     N = img.size()[0]
-#     C = img.size()[1]
-#     H = img.size()[2]
-#     W = img.size()[3]
-#     Itrue = img.clone().resize_(N, C, H*W)
-#     Ifake = ref.clone().resize_(N, C, H*W)
-#     nom = torch.mul(Itrue, Ifake).sum(dim=1).resize_(N, H*W)
-#     denom1 = torch.pow(Itrue,2).sum(dim=1).sqrt_().resize_(N, H*W)
-#     denom2 = torch.pow(Ifake,2).sum(dim=1).sqrt_().resize_(N, H*W)
-#     sam = torch.div(nom, torch.mul(denom1, denom2)).acos_().resize_(N, H*W)
-#     sam = sam / np.pi * 180a
-#     sam = torch.sum(sam) / (N*H*W)
-#     return sam
-#
 def SAM_GPU(img, ref):
     C = img.size()[0]
     H = img.size()[1]
@@ -68,54 +53,6 @@ def SAM_GPU(img, ref):
     sam[sam != sam] = 0
     sam_sum = torch.sum(sam) / (H * W) / np.pi * 180
     return sam_sum
-
-
-# def batch_SAM_CPU(img, ref):
-#     I_true = img.data.cpu().numpy()
-#     I_fake = ref.data.cpu().numpy()
-#     N = I_true.shape[0]
-#     C = I_true.shape[1]
-#     H = I_true.shape[2]
-#     W = I_true.shape[3]
-#     batch_sam = 0
-#     for i in range(N):
-#         true = I_true[i,:,:,:].reshape(C, H*W)
-#         fake = I_fake[i,:,:,:].reshape(C, H*W)
-#         nom = np.sum(np.multiply(true, fake), 0).reshape(H*W, 1)
-#         denom1 = np.sqrt(np.sum(np.square(true), 0)).reshape(H*W, 1)
-#         denom2 = np.sqrt(np.sum(np.square(fake), 0)).reshape(H*W, 1)
-#         sam = np.arccos(np.divide(nom,np.multiply(denom1,denom2))).reshape(H*W, 1)
-#         sam = sam/np.pi*180
-#         # ignore pixels that have zero norm
-#         idx = (np.isfinite(sam))
-#         batch_sam += np.sum(sam[idx])/np.sum(idx)
-#         if np.sum(~idx) != 0:
-#             print("waring: some values were ignored when computing SAM")
-#     return batch_sam/N
-#
-# def SAM_CPU(img, ref):
-#     img = img.data.cpu().numpy()
-#     ref = ref.data.cpu().numpy()
-#     N = opt.batch_size
-#     C = img.shape[0]
-#     H = img.shape[1]
-#     W = img.shape[2]
-#     batch_sam = 0
-#     for i in range(N):
-#         true = img[i,:,:,:].reshape(C, H*W)
-#         fake = ref[i,:,:,:].reshape(C, H*W)
-#         nom = np.sum(np.multiply(true, fake), 0).reshape(H*W, 1)
-#         denom1 = np.sqrt(np.sum(np.square(true), 0)).reshape(H*W, 1)
-#         denom2 = np.sqrt(np.sum(np.square(fake), 0)).reshape(H*W, 1)
-#         sam = np.arccos(np.divide(nom,np.multiply(denom1,denom2))).reshape(H*W, 1)
-#         sam = sam/np.pi*180
-#         # ignore pixels that have zero norm
-#         idx = (np.isfinite(sam))
-#         batch_sam += np.sum(sam[idx])/np.sum(idx)
-#         if np.sum(~idx) != 0:
-#             print("waring: some values were ignored when computing SAM")
-#     return batch_sam/N
-##########################################################################################################
 
 def compare_mse(im1, im2):
     im1, im2 = _as_floats(im1, im2)
