@@ -26,10 +26,8 @@ def _no_grad_trunc_normal_(tensor, mean, std, a, b):
         tensor.clamp_(min=a, max=b)
         return tensor
 
-
 def pair(t):
     return t if isinstance(t, tuple) else (t, t)
-
 
 class PreNorm(nn.Module):
     def __init__(self, dim, fn):
@@ -41,19 +39,16 @@ class PreNorm(nn.Module):
         x = self.norm(x)
         return self.fn(x, *args, **kwargs)
 
-
 class GELU(nn.Module):
     def forward(self, x):
         return F.gelu(x)
-
 
 def conv(in_channels, out_channels, kernel_size, bias=False, padding=1, stride=1):
     return nn.Conv2d(
         in_channels, out_channels, kernel_size,
         padding=(kernel_size // 2), bias=bias, stride=stride)
 
-
-def shift_back(inputs, step=2):  # input [bs,28,256,310]  output [bs, 28, 256, 256]
+def shift_back(inputs, step=2): 
     [bs, nC, row, col] = inputs.shape
     if row == col:
         return inputs
@@ -94,7 +89,7 @@ class MaskGuidedMechanism(nn.Module):
 # ----------------------------------------
 #       Mspe Transformer Block
 # ----------------------------------------
-class Mspe(nn.Module):  # [bs, 28, 256, 256]
+class Mspe(nn.Module): 
     def __init__(
             self,
             dim, heads,
@@ -121,62 +116,36 @@ class Mspe(nn.Module):  # [bs, 28, 256, 256]
         mask: [1,c,h,w]
         return out: [b,h,w,c]
         """
-        # x = x.permute(0, 2, 3, 1)
+
         b, h, w, c = x.shape
         x = x.reshape(b, h * w, c)
         q1_inp = self.to_q1(x)
         k1_inp = self.to_k1(x)
         v1_inp = self.to_v1(x)
         mask_attn = self.MaskGuidedMechanism(mask)
-        # mask_attn = mask_attn.permute(0, 2, 3, 1)
+      
         if b != 0:
             mask_attn = (mask_attn[0, :, :, :]).expand([b, h, w, c])
         q1, k1, v1, mask_attn = map(lambda t: rearrange(t, 'b n (h d) -> b h n d', h=self.num_heads),
                                     (q1_inp, k1_inp, v1_inp, mask_attn.flatten(1, 2)))
         v1 = v1 * mask_attn
-        # q: b,heads,hw,c
+      
         q1 = q1.transpose(-2, -1)
         k1 = k1.transpose(-2, -1)
         v1 = v1.transpose(-2, -1)
         q1 = F.normalize(q1, dim=-1, p=2)
         k1 = F.normalize(k1, dim=-1, p=2)
-        attn = (k1 @ q1.transpose(-2, -1))  # A = K^T*Q
+        attn = (k1 @ q1.transpose(-2, -1))  
         attn = attn * self.rescale.cuda()
         attn = attn.softmax(dim=-1)
         x = attn @ v1  # b,heads,d,hw
-        x = x.permute(0, 3, 1, 2)  # Transpose
+        x = x.permute(0, 3, 1, 2)  
         x = x.reshape(b, h * w, self.num_heads * self.dim_head)
         out_c = self.proj(x).view(b, h, w, c)
         out_p = self.band_emb(v1_inp.reshape(b, h, w, c).permute(0, 3, 1, 2)).permute(0, 2, 3, 1)
         Xspe = out_c + out_p
 
         return Xspe
-
-
-# ----------------------------------------
-#           光谱特征提取
-# ----------------------------------------
-class SpeFE(nn.Module):
-    def __init__(self, dim):
-        super(SpeFE, self).__init__()
-        self.dim = dim
-        self.conv_11 = nn.Conv2d(in_channels=dim, out_channels=dim, kernel_size=3, padding=1)
-        # self.ln_11 = nn.LayerNorm()
-        self.LeakyReLU = nn.LeakyReLU(dim)
-        self.conv_12 = nn.Conv2d(in_channels=dim, out_channels=dim, kernel_size=3, padding=1)
-        # self.ln_12 = nn.LayerNorm()
-
-    def forward(self, LR_HSI_Up):
-        ln_11 = nn.LayerNorm(LR_HSI_Up.shape).cuda()
-        ln_12 = nn.LayerNorm(LR_HSI_Up.shape).cuda()
-        out1_1 = self.LeakyReLU(ln_11(self.conv_11(LR_HSI_Up)))
-        # out1_1 = self.LeakyReLU(self.conv_11(LR_HSI_Up))
-        out1_2 = self.LeakyReLU(ln_12(self.conv_12(out1_1)))
-        # out1_2 = self.LeakyReLU(self.conv_12(out1_1))
-        LR_HSI = out1_2 + LR_HSI_Up
-
-        return LR_HSI_Up
-
 
 # --------------------------------------------------------------------------------
 #           Spatial Feature Extractor (SpaFE)——————RGB+RGB(DW,UP)
@@ -232,7 +201,6 @@ class MulCorssAttention(nn.Module):
         self.token_height = token_height
         self.token_width = token_width
         self.dim = dim
-        # self.to_qkv = nn.Linear(dim, inner_dim * 28, bias = False)########################################################################################
         self.to_q2 = nn.Linear(token_height * token_width * 2, token_height * token_width * 2, q_bias)
         self.to_k2 = nn.Linear(token_height * token_width * 2, token_height * token_width * 2, k_bias)
         self.to_v2 = nn.Linear(token_height * token_width * 2, token_height * token_width * 2, v_bias)
@@ -244,7 +212,6 @@ class MulCorssAttention(nn.Module):
         self.attend = nn.Softmax(dim=-1)
         self.proj_drop = nn.Dropout(proj_drop)
 
-    # rgblist[i] = rgb_listi->[a,b] rgb_listi[i]
     def forward(self, V_2_in, K_2_in, Q_2_in):
         b, c, h, w = Q_2_in.shape
         (image_height, image_width) = (h, w)
@@ -262,32 +229,25 @@ class MulCorssAttention(nn.Module):
             nn.LayerNorm(self.token_height * self.token_width * 2)).cuda()
         ########################################################################################
 
-        # x = self.norm(V_in)
         Q_2_in = to_patch_embedding(Q_2_in)
         K_2_in = to_patch_embedding(K_2_in)
         V_2_in = to_patch_embedding(V_2_in)
 
         b, n, _ = Q_2_in.shape
-        # cls_tokens = repeat(Cls_token, '1 1 d -> b 1 d', b=b)
-        # Q = torch.cat((cls_tokens, Q), dim=1)
-        # Q += pos_embedding[:, :(n + 1)]
         Q = self.proj_drop(Q_2_in)
         Q += pos_embedding[:, :n]
         K = self.proj_drop(K_2_in)
         K += pos_embedding[:, :n]
         V = self.proj_drop(V_2_in)
         V += pos_embedding[:, :n]
-
         Q = self.to_q2(Q)
         K = self.to_k2(K)
         V = self.to_v2(V)
-
         q2, k2, v2 = map(lambda t: rearrange(t, 'b n (h d) -> b h n d', h=self.heads), (Q, K, V))
         dots = torch.matmul(q2, k2.transpose(-1, -2)) * self.scale
         attn = self.attend(dots)
         attn = self.proj_drop(attn)
         out = torch.matmul(attn, v2)
-
         out = rearrange(out, 'b h n d -> b n (h d)')
         out = self.to_out(out)
         out = rearrange(out, 'b (h w) (p1 p2 c)->b c (h p1) (w p2)', p1=self.token_height, p2=self.token_width,
@@ -315,10 +275,8 @@ class HRFusion(nn.Module):
 
         self.Mspe = Mspe(dim, dim_head, heads)
         self.SpaFE = SpaFE()
-        self.SpeFE = SpeFE(dim)
         self.conv_v = nn.Conv2d(in_channels=2 * dim, out_channels=dim, kernel_size=3, padding=1)
         self.BN=nn.BatchNorm2d(dim)
-
 
     def forward(self, x, mask, rgb):
         if mask is not None:
@@ -328,23 +286,13 @@ class HRFusion(nn.Module):
 
         LR_HSI = LR_HSI.permute(0, 3, 1, 2)
         b, c, h, w = LR_HSI.shape
-        # conv_v = nn.Conv2d(in_channels=2 * c, out_channels=c, kernel_size=3, padding=1)
-        # b, c, h, w = LR_HSI.shape
-        # LR_HSI_Up = F.interpolate(LR_HSI, size=(h, w), mode='bilinear')
-        # LR_HSI_Up = LR_HSI_Up.permute(0, 3, 2, 1)
-        #V = LR_HSI
-
         V = LR_HSI
-
         K = torch.concat((LR_HSI, rgb), dim=1)
         K = self.BN(self.conv_v(K))
-
         Q = rgb
 
-        # Q = self.SpeFE(LR_HSI_Up)
-
         atten = self.MulCorssAttention(V, K, Q)
-        x = atten + K   # b,c,h,w
+        x = atten + K  
 
         return x.permute(0, 2, 3, 1)
 
@@ -394,7 +342,7 @@ class CascadeTransformer(nn.Module):
         return out: [b,c,h,w]
         """
         x = x.permute(0, 2, 3, 1)
-        # mask = mask.permute(0, 2, 3, 1)
+
         for (attn1, attn2, ff) in self.blocks:
             x1 = attn1(x, mask) + x  # .permute(0, 2, 3, 1)
             x2 = attn2(x1, mask=None, rgb=x_rgb) + x1
@@ -477,7 +425,7 @@ class HRFT(nn.Module):
         # Bottleneck
         fea = self.bottleneck(fea, mask, rgb_list[2])
 
-        # Decoder  RGB_list[1-i]
+        # Decoder  
         for i, (FeaUpSample, Fution, LeWinBlcok) in enumerate(self.decoder_layers):
             fea = FeaUpSample(fea)
             fea = Fution(torch.cat([fea, fea_encoder[self.stage - 1 - i]], dim=1))
