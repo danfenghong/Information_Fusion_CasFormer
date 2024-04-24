@@ -62,11 +62,8 @@ def test(model):
 
 def main():
     # model
-    #device = torch.device()
     pretrained_model_path=opt.pretrained_model_path
-   # model = model_generator(opt.method,opt.pretrained_model_path).cuda()
     model = torch.load(pretrained_model_path)
-    #  model= model.cuda()
     model.to("cuda:0")
     pred, truth = test(model)
     name = result_path + 'Test_result.mat'
