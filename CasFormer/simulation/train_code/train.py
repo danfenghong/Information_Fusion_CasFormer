@@ -36,8 +36,6 @@ if not os.path.exists(result_path):
 if not os.path.exists(model_path):
     os.makedirs(model_path)
 
-
-# log_path = opt.outf + date_time + '/log.txt'
 # model
 def calculate_averages(lst, interval):
     averges = []
@@ -46,7 +44,6 @@ def calculate_averages(lst, interval):
         avg = sum(sublist) / len(sublist)
         averges.append(avg)
     return averges
-
 
 model = torch.nn.DataParallel(model_generator(opt.method, opt.pretrained_model_path).cuda())
 
@@ -57,9 +54,6 @@ if opt.scheduler == 'MultiStepLR':
 elif opt.scheduler == 'CosineAnnealingLR':
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, opt.max_epoch, eta_min=1e-6)
 criterion = nn.L1Loss(reduction="mean").cuda()
-
-#kl = KL_Loss(T=10, method="mean").cuda()
-
 
 def eval_metrics(epoch, loader, mode):
     psnr_mean_list = []
@@ -153,7 +147,6 @@ def mkdir_if_missing(dir_path):
         if e.errno != errno.EEXIST:
             raise
 
-
 if __name__ == "__main__":
     # sys.stdout = Logger(log_path)
     sys.stdout=Logger(fpath=txt_path)
@@ -164,22 +157,17 @@ if __name__ == "__main__":
     random.seed(opt.seed)
     print(opt)
     data_init_begin = time.time()
-
     # data_path_cave = "/....../CasFormer/datasets/data_test/cave_1028/"
     Dataset = dataset(opt, opt.data_path_cave, opt.mask_path, patch_per_img=300, dataset_type="cave", mode="train")
-
     # data_path_test = "/....../CasFormer/datasets/Test/all_test/1/"
     Test_Dataset = dataset(opt, opt.data_path_test, opt.TestMask_path, patch_per_img=10, dataset_type="cave",
                            mode="test")
-
     loader_train = tud.DataLoader(Dataset, num_workers=8, batch_size=opt.batch_size, shuffle=True)
     loader_test = tud.DataLoader(Test_Dataset, num_workers=8, batch_size=opt.batch_size, shuffle=False)
-
     data_init_end = time.time()
 
     print(f"dataset loading costs {data_init_end - data_init_begin} s\n")
 
-    ## pipline of training
     for epoch in range(0, opt.max_epoch):
         print(f"begin the {epoch + 1}th epoch train:")
         model.train()
@@ -194,7 +182,6 @@ if __name__ == "__main__":
         sam_mean_list = []
 
         start_time = time.time()
-        # for i, (input, label, Mask, Phi, Phi_s) in enumerate(loader_train):
         for i, (input, gt, label_rgb, mask3d, mask3d_shift) in enumerate(loader_train):
             # print(f"begin {i}th iteration\n")
             iteration_time_begin = time.time()
@@ -212,7 +199,6 @@ if __name__ == "__main__":
             loss.backward()
             optimizer.step()
             iteration_time_end = time.time()
-
         elapsed_time = time.time() - start_time
         print(
             'epcoh = %4d , loss = %.10f,loss_gt = %.10f, time = %4.2f s' % (
@@ -224,7 +210,4 @@ if __name__ == "__main__":
         psnr_test, ssim_test, mse_test, sam_test = eval_metrics(epoch=epoch, loader=loader_test, mode="test")
 
         scheduler.step()
-
         torch.save(model, os.path.join(model_path, 'model_%03d.pth' % (epoch + 1)))
-
-
