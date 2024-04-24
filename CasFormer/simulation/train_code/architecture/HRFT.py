@@ -184,7 +184,27 @@ class SpaFE(nn.Module):
 
         return [x1, x2, x3]
 
+class SpeFE(nn.Module):
+    def __init__(self, dim):
+        super(SpeFE, self).__init__()
+        self.dim = dim
+        self.conv_11 = nn.Conv2d(in_channels=dim, out_channels=dim, kernel_size=3, padding=1)
+        # self.ln_11 = nn.LayerNorm()
+        self.LeakyReLU = nn.LeakyReLU(dim)
+        self.conv_12 = nn.Conv2d(in_channels=dim, out_channels=dim, kernel_size=3, padding=1)
+        # self.ln_12 = nn.LayerNorm()
 
+    def forward(self, LR_HSI_Up):
+        ln_11 = nn.LayerNorm(LR_HSI_Up.shape).cuda()
+        ln_12 = nn.LayerNorm(LR_HSI_Up.shape).cuda()
+        out1_1 = self.LeakyReLU(ln_11(self.conv_11(LR_HSI_Up)))
+        # out1_1 = self.LeakyReLU(self.conv_11(LR_HSI_Up))
+        out1_2 = self.LeakyReLU(ln_12(self.conv_12(out1_1)))
+        # out1_2 = self.LeakyReLU(self.conv_12(out1_1))
+        LR_HSI = out1_2 + LR_HSI_Up
+
+        return LR_HSI_Up
+        
 # --------------------------------------------------------------------------------
 #          Spatial-Spetral Cross-Attention
 # -------------------------------------------------------------------------------
@@ -271,6 +291,7 @@ class HRFusion(nn.Module):
 
         self.Mspe = Mspe(dim, dim_head, heads)
         self.SpaFE = SpaFE()
+        self.SpeFE = SpeFE(dim)
         self.conv_v = nn.Conv2d(in_channels=2 * dim, out_channels=dim, kernel_size=3, padding=1)
         self.BN=nn.BatchNorm2d(dim)
 
