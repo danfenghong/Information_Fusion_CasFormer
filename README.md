@@ -28,30 +28,33 @@ Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&h
 
 ```shell
 |--datasets
-    |-- cave_test
-         |--scene1.mat
-         |--scene2.mat
-         ：
-         |--scene10.mat
-         |--mask_test.mat  
-    |-- cave_train
-         |--scene1.mat
-         |--scene2.mat
-         ：
-         |--scene20.mat
+        |-- Test
+               |-- cave_test
+                        |--scene1.mat
+                        |--scene2.mat
+                        ：
+               ：
+        |-- Train
+               |-- cave_train
+                        |--scene1.mat
+                        |--scene2.mat
+                        ：
+               |-- mask_train
+               ：
+
 |-- test_code
-    |--model_zoo
-         |--cave_model.pth
-    |--result
-    |--option.py
-    |--test.py
-    ：
-    ：
+        |--model_zoo
+             |--cave_model.pth
+        |--result
+        |--option.py
+        |--test.py
+        ：
+
 |-- train_code
-    |--exp
-    |--option.py
-    |--train.py
-    ：                 
+        |--exp
+        |--option.py
+        |--train.py
+        ：                 
 ```
  
 ## Citation Details
