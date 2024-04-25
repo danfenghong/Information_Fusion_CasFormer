@@ -22,7 +22,7 @@ Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&h
 > [!NOTE]
 > - You may need to manually download the `CAVE dataset` (http://www.cs.columbia.edu/CAVE/databases/multispectral), `KAIST dataset` (https://vclab.kaist.ac.kr/siggraphasia2017p1/kaistdataset.html), and `ICVL dataset` (http://icvl.cs.bgu.ac.il/hyperspectral/).
 > 
-> - The pretrained model (cave_model.pth) can be downloaded from [Baidu Disk](https://pan.baidu.com/s/1G89QYQ__d7kaGXxQ2zeXoQ) with code: `d5yc` or [Google Drive](https://drive.google.com/drive/folders/14zpLtK_TGXhAcUPJVpzboHyR1AbbpcUp?usp=sharing).
+> - The pretrained model `(test_code/model_zoo/cave_model.pth)` can be downloaded from [Baidu Disk](https://pan.baidu.com/s/1G89QYQ__d7kaGXxQ2zeXoQ) with code: `d5yc` or [Google Drive](https://drive.google.com/drive/folders/14zpLtK_TGXhAcUPJVpzboHyR1AbbpcUp?usp=sharing).
 >
 > - Simply run `test_code/test.py` to reproduce our method on CAVE test dataset from [Baidu Disk](https://pan.baidu.com/s/1UzuW38BGscemZebOOUmERQ) with code: `cabi` or [Google Drive](https://drive.google.com/drive/folders/1vQaPOj3oYZCq6s09useXcYvofhI6YLOD?usp=sharing).
 
