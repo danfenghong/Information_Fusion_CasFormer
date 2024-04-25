@@ -1,1 +1,1 @@
-Please put the reconstructed HSI in this folder.
+Please put the your datasets.
