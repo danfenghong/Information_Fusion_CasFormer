@@ -13,7 +13,7 @@ Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&h
 ## Code Running
  :anger: Before: For the required packages, please refer to detailed `.py` files;
  
- :rocket: Parameters: The trade-off parameters as `option.py*` could be better tuned and the network hyperparameters are flexible;
+ :rocket: Parameters: The trade-off parameters as `test_code/option.py*` could be better tuned and the network hyperparameters are flexible;
  
  :artificial_satellite: Results: Please see the three evaluation metrics (PSNR, SSIM, and SAM);
  
@@ -24,7 +24,7 @@ Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&h
 > 
 > - The pretrained model (cave_model.pth) can be downloaded from [Baidu Disk](https://pan.baidu.com/s/1G89QYQ__d7kaGXxQ2zeXoQ) with code: `d5yc` or [Google Drive](https://drive.google.com/drive/folders/14zpLtK_TGXhAcUPJVpzboHyR1AbbpcUp?usp=sharing).
 >
-> - Simply run `./test_code/test.py` to reproduce our method on CAVE test dataset from [Baidu Disk](https://pan.baidu.com/s/1UzuW38BGscemZebOOUmERQ) with code: `cabi` or [Google Drive](https://drive.google.com/drive/folders/1vQaPOj3oYZCq6s09useXcYvofhI6YLOD?usp=sharing).
+> - Simply run `test_code/test.py` to reproduce our method on CAVE test dataset from [Baidu Disk](https://pan.baidu.com/s/1UzuW38BGscemZebOOUmERQ) with code: `cabi` or [Google Drive](https://drive.google.com/drive/folders/1vQaPOj3oYZCq6s09useXcYvofhI6YLOD?usp=sharing).
 
 ```shell
 |--CasFormer
@@ -40,11 +40,19 @@ Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&h
             |--scene2.mat
             ：
             |--scene20.mat
-    |--simulation
-    	|-- test_code
+    |-- test_code
             |--model_zoo
                  |--cave_model.pth
- 
+            |--result
+            |--option.py
+            |--test.py
+            ：
+            ：
+     |-- train_code
+            |--exp
+            |--option.py
+            |--train.py
+            ：                 
 ```
  
 ## Citation Details
