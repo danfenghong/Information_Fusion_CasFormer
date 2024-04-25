@@ -27,32 +27,31 @@ Chenyu Li, [Bing Zhang](https://scholar.google.com/citations?user=nHup8tQAAAAJ&h
 > - Simply run `test_code/test.py` to reproduce our method on CAVE test dataset from [Baidu Disk](https://pan.baidu.com/s/1UzuW38BGscemZebOOUmERQ) with code: `cabi` or [Google Drive](https://drive.google.com/drive/folders/1vQaPOj3oYZCq6s09useXcYvofhI6YLOD?usp=sharing).
 
 ```shell
-|--CasFormer
-    |--datasets
-    	|-- cave_test
-            |--scene1.mat
-            |--scene2.mat
-            ：
-            |--scene10.mat
-            |--mask_test.mat  
-    	|-- cave_train
-            |--scene1.mat
-            |--scene2.mat
-            ：
-            |--scene20.mat
-    |-- test_code
-            |--model_zoo
-                 |--cave_model.pth
-            |--result
-            |--option.py
-            |--test.py
-            ：
-            ：
-     |-- train_code
-            |--exp
-            |--option.py
-            |--train.py
-            ：                 
+|--datasets
+    |-- cave_test
+         |--scene1.mat
+         |--scene2.mat
+         ：
+         |--scene10.mat
+         |--mask_test.mat  
+    |-- cave_train
+         |--scene1.mat
+         |--scene2.mat
+         ：
+         |--scene20.mat
+|-- test_code
+    |--model_zoo
+         |--cave_model.pth
+    |--result
+    |--option.py
+    |--test.py
+    ：
+    ：
+|-- train_code
+    |--exp
+    |--option.py
+    |--train.py
+    ：                 
 ```
  
 ## Citation Details
