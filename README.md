@@ -1,7 +1,7 @@
 <div align="center">
 <h1>CasFormer: Cascaded Transformers for Fusion-aware Computational Hyperspectral Imaging</h1>
   
-Chenyu Li, Bing Zhang, Danfeng Hong](https://scholar.google.com/citations?hl=en&user=n7gL0_IAAAAJ&view_op=list_works&sortby=pubdate), Jun Zhou, Gemine Vivone, Shutao Li, Jocelyn Chanussot
+Chenyu Li, Bing Zhang, [Danfeng Hong](https://scholar.google.com/citations?hl=en&user=n7gL0_IAAAAJ&view_op=list_works&sortby=pubdate), Jun Zhou, Gemine Vivone, Shutao Li, Jocelyn Chanussot
 
 **Information Fusion: (https://doi.org/10.1016/j.inffus.2024.102408).  
 </div>
